@@ -108,6 +108,9 @@ function Test-Command
 
 	Write-Host "Testing $modID mod MiniYAML..." -ForegroundColor Cyan
 	InvokeCommand "$utilityPath $modID --check-yaml"
+
+	Write-Host "Testing ra-remaster-content mod MiniYAML..." -ForegroundColor Cyan
+	InvokeCommand "$utilityPath ra-remaster-content --check-yaml"
 }
 
 function Check-Command

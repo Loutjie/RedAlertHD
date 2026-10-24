@@ -178,5 +178,5 @@ endif
 test: all
 	@echo "Testing $(MOD_ID) mod MiniYAML..."
 	@./utility.sh --check-yaml
-	@echo "Testing remaster-content mod MiniYAML..."
-	@Mod=remaster-content ./utility.sh --check-yaml
+	@echo "Testing ra-remaster-content mod MiniYAML..."
+	@Mod=ra-remaster-content ./utility.sh --check-yaml
