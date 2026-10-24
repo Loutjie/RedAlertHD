@@ -37,11 +37,11 @@ def mod_yaml_list(path, key):
     with open(path, encoding="utf-8") as f:
         for raw in f:
             line = raw.rstrip("\n")
-            if re.match(r"^\S", line):
+            if re.match(r"^[^\s#]", line):
                 inside = line.startswith(key + ":")
                 continue
             if inside:
-                item = line.split("#")[0].strip()
+                item = line.split("#")[0].strip()  # a column-0 comment must not end the list
                 if item:
                     items.append(item)
     return items
@@ -124,8 +124,17 @@ def flatten(tree, prefix=""):
     return lines
 
 
+def utility_command(cwd, args, mod_arg):
+    """Command line for the engine utility wrapper: utility.sh, or utility.cmd on Windows.
+
+    Both wrappers take the mod id first (engine/) or read it from mod.config (repo root).
+    """
+    launcher = ["cmd", "/c", "utility.cmd"] if os.name == "nt" else ["./utility.sh"]
+    return launcher + ([mod_arg] if mod_arg else []) + args
+
+
 def run_utility(cwd, args, mod_arg):
-    cmd = ["./utility.sh"] + ([mod_arg] if mod_arg else []) + args
+    cmd = utility_command(cwd, args, mod_arg)
     p = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
     if p.returncode != 0:
         return None, (p.stdout + p.stderr).strip()

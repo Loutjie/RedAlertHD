@@ -17,14 +17,14 @@ the LAN setup against stock OpenRA RA `playtest-20261011`, and the headless chec
 - Only the Temperate tileset is HD. Snow, Interior and Desert maps load with upscaled classic terrain.
 - Only the Allied Medium Tank (`2tnk`) is HD. All other units and buildings are upscaled classic art.
 - The `2tnk` muzzle flash plays all 10 HD frames (about twice the stock duration, cosmetic only).
-- Audio is classic.
+- Audio is classic. The content selector still shows an `AudioStyle` choice, but Red Alert's Remastered audio lists are empty in milestone 1, so choosing `remastered` changes nothing.
 - Rules, weapons, maps and AI are identical to stock Red Alert apart from a written-down list of render-only overrides.
 
 ## Changes to shared code
 
 Milestone 1 edits these files that are shared with the Tiberian Dawn HD mod (each is small and generic):
 
-- `OpenRA.Mods.Mobius/Terrain/RemasterTerrain.cs`: `Images` falls back to `Filename`.
+- `OpenRA.Mods.Mobius/Terrain/RemasterTerrain.cs`: `Filename` falls back to `Images`.
 - `OpenRA.Mods.Mobius/FileSystem/RemasterFileSystemLoader.cs`: audio manifests are data-driven.
 - `OpenRA.Mods.Mobius/Traits/World/RemasterTerrainRenderer.cs`: validation of classic templates.
 
@@ -34,7 +34,7 @@ Red Alert HD loads assets directly from an existing digital installation of the 
 
 #### Windows
 
-Install the C&C Remastered Collection through Steam or Origin.
+Install the C&C Remastered Collection through Steam.
 
 #### Linux
 
@@ -59,7 +59,9 @@ Install the C&C Remastered Collection through Steam using the following procedur
    	"StateFlags"		"4"
    }
    ```
-   The mod only accepts an install whose manifest has `"StateFlags" "4"`. Tiberian Dawn HD's
-   `1026` (Steam should download the game) is rejected by the content finder.
+   `"StateFlags" "4"` means "installed". Use it when you place the game files yourself (no Steam
+   needed): the mod accepts only an install whose manifest says 4. To have Steam download the game
+   instead, use `"StateFlags" "1026"` (Tiberian Dawn HD's value, "download this"); once Steam finishes it
+   rewrites the manifest to 4 itself. The mod rejects a manifest that still says 1026.
 3. Put the C&C Remastered Collection files in `~/Library/Application Support/Steam/steamapps/common/CnCRemastered`.
    If Steam is installed, restart it and log into an account that owns the collection and it downloads them.

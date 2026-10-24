@@ -53,9 +53,9 @@ def tileset_list(path):
     with open(path, encoding="utf-8") as f:
         for raw in f:
             line = raw.rstrip("\n")
-            if re.match(r"^\S", line):
+            if re.match(r"^[^\s#]", line):
                 inside = line.startswith("TileSets:")
-            elif inside and line.strip():
+            elif inside and line.strip() and not line.strip().startswith("#"):
                 items.append(line.strip())
     return items
 
@@ -105,10 +105,14 @@ def main():
     if [i.split("|", 1)[1] for i in stock_list] != [i.split("|", 1)[1] for i in our_list]:
         errors.append(f"TileSets list differs: {our_list} vs stock {stock_list}")
 
+    compared = 0
     for item in our_list:
         package, path = item.split("|", 1)
         if package == "rahd":
+            compared += 1
             errors += compare(os.path.join(STOCK_MOD, path), os.path.join(OUR_MOD, path), verbose)
+    if compared == 0:
+        errors.append("no rahd| tilesets found in mods/ra/mod.yaml TileSets: nothing was compared")
 
     if errors:
         print("tileset parity FAILED")

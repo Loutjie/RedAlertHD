@@ -75,6 +75,11 @@ Milestone 1 has not been seen running yet. Everything below is the checklist for
    port 1234. Play 5 minutes; a desync shows as a lobby/in-game "out of sync" message and a
    `syncreport.log` in the OpenRA support directory.
 
+## Extra checks (not part of the spec checklist)
+
+- Random/generated map: in the lobby, check that a random or generated map either is not offered or
+  works between this build and stock Red Alert.
+
 ## Headless checks (no game launch)
 
 ```sh
@@ -86,3 +91,5 @@ python3 tools/check_rules_parity.py       # also run by make test, along with to
 content is mounted only after a content source is chosen in the game. Use the scratch-`HOME` recipe in
 `docs/remaster-ra-inventory.md` ("Headless checks"): a scratch `HOME` holding a `settings.yaml` with
 `ContentSource@ra`, a manifest with `"StateFlags" "4"`, and a symlink to the real install.
+
+`make check-scripts` needs `luac` (Lua) on the PATH.
