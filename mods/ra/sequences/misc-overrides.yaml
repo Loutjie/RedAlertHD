@@ -1,0 +1,12 @@
+# Remastered shroud: SHADOW-00..47 match the 48 frames of the classic shadow.shp.
+# Fog reuses the same frames at half alpha; classic artwork keeps the stock fog palette.
+shroud:
+	Defaults:
+		RemasteredFilenamePattern: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SHROUD\SHADOW-{0:D2}.DDS
+			Count: 48
+		RemasteredPremultiplied: false
+	shroud:
+	fog:
+		Filename: shadow.shp
+		Length: *
+		RemasteredAlpha: 0.5

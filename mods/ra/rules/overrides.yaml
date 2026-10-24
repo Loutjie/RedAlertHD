@@ -1,3 +1,9 @@
 ^BaseWorld:
 	-TerrainRenderer:
 	RemasterTerrainRenderer:
+	ShroudRenderer:
+		FogVariants: fog
+
+^Palettes:
+	PlayerColorShift:
+		BasePalette: player
