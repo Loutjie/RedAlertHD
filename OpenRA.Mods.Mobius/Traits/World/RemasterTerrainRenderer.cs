@@ -33,6 +33,25 @@ namespace OpenRA.Mods.Mobius.Traits
 			foreach (var t in terrainInfo.Templates)
 			{
 				var templateInfo = (RemasterTerrainTemplateInfo)t.Value;
+
+				// Classic-only templates (no Remastered art) use one frame per tile from Filename
+				if (templateInfo.RemasteredFilenames == null && templateInfo.RemasteredCompositeFilenames == null)
+				{
+					for (var i = 0; i < t.Value.TilesCount; i++)
+					{
+						if (t.Value[i] != null && !tileCache.HasTileSprite(new TerrainTile(t.Key, (byte)i), 0))
+						{
+							onError($"\tTemplate `{t.Key}` tile {i} references frame {i} of `{templateInfo.Filename}` that does not exist.");
+							failed = true;
+						}
+					}
+
+					continue;
+				}
+
+				if (templateInfo.RemasteredFilenames == null)
+					continue;
+
 				foreach (var kv in templateInfo.RemasteredFilenames)
 				{
 					for (var i = 0; i < kv.Value.Length; i++)
