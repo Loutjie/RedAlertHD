@@ -180,3 +180,5 @@ test: all
 	@./utility.sh --check-yaml
 	@echo "Testing ra-remaster-content mod MiniYAML..."
 	@Mod=ra-remaster-content ./utility.sh --check-yaml
+	@echo "Checking $(MOD_ID) rules parity with stock Red Alert..."
+	@python3 tools/check_rules_parity.py

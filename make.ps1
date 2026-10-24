@@ -111,6 +111,9 @@ function Test-Command
 
 	Write-Host "Testing ra-remaster-content mod MiniYAML..." -ForegroundColor Cyan
 	InvokeCommand "$utilityPath ra-remaster-content --check-yaml"
+
+	Write-Host "Checking $modID rules parity with stock Red Alert..." -ForegroundColor Cyan
+	InvokeCommand "python tools/check_rules_parity.py"
 }
 
 function Check-Command
