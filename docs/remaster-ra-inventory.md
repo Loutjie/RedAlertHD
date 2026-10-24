@@ -147,6 +147,37 @@ Remastered artwork is addressed in sequences with `RemasteredFilename:` using th
 - Also present: `TEXTURES_COMMON_SRGB.MEG`, `TEXTURES_PATCHES_SRGB.MEG`, `TEXTURES_SRGB.MEG`,
   `MUSIC.MEG`, `SFX2D_*.MEG`, `SFX3D.MEG`, `MOVIES_RA.MEG`.
 
+## HD Temperate tileset
+
+`mods/ra/tilesets/temperat.yaml` is stock `engine/mods/ra/tilesets/temperat.yaml` with
+`SheetSize: 1024` renamed to `IndexedSheetSize: 1024` (the `RemasterTerrain` field TD HD uses),
+then converted:
+
+```sh
+./utility.sh --convert-tileset "$PWD/mods/ra/tilesets/temperat.yaml" \
+	"<install>/Data/CONFIG.MEG" RA_TERRAIN_TEMPERATE.XML
+```
+
+- **Pass an absolute tileset path.** `utility.sh` changes into `engine/` before it runs, so a relative
+  `mods/ra/tilesets/temperat.yaml` resolves to the stock engine file and converts that in place.
+- The converter renames `Images` to `Filename` and adds `RemasteredFilenames` (shape index to
+  `DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\...DDS` names). It needed no RA changes.
+- `python3 tools/check_tileset_parity.py` (part of `make test`) asserts that General (except the sheet
+  size field), the Terrain section, MultiBrushCollections and every template's Id, Size, Tiles,
+  Categories and PickAny equal stock. `-v` lists the classic-only templates.
+- Coverage: 257 of 308 templates have Remastered art for every tile in `Tiles`. None is partial.
+- **51 templates have no Remastered counterpart** and keep classic art (upscaled under
+  `ArtworkStyle: remastered`). Their names do not occur anywhere in `RA_TERRAIN_TEMPERATE.XML`:
+  - shore `sh57`..`sh64` (Ids 500, 502..508)
+  - small bridges `sbridge1/2/3/4` with `h`, `d` and `x` variants (Ids 519..534)
+  - `sccnr`, `sccnl`, `sccsr`, `sccsl`, `sccln`, `sccls`, `sccrn`, `sccrs` (Ids 550..557)
+  - `deca`..`dech` decorations (Ids 580..588; `decc` is used twice)
+  - `fjord1`, `fjord2` (Ids 590, 591)
+  - `cliffsl1`..`cliffsl4`, `cliffsw1`..`cliffsw4` (Ids 401..408)
+- The Remastered XML has frames for some shape indices that are absent from stock `Tiles` (for
+  example templates 131, 235, 380, 382 and 383). They are reserved but never drawn, because maps
+  cannot reference a tile index that is not in `Tiles`.
+
 ## `2tnk` (Medium Tank) body and turret
 
 Archive: `DATA\ART\TEXTURES\SRGB\RED_ALERT\UNITS\2TNK.ZIP` in `TEXTURES_RA_SRGB.MEG`.

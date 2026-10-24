@@ -182,3 +182,5 @@ test: all
 	@Mod=ra-remaster-content ./utility.sh --check-yaml
 	@echo "Checking $(MOD_ID) rules parity with stock Red Alert..."
 	@python3 tools/check_rules_parity.py
+	@echo "Checking $(MOD_ID) tileset parity with stock Red Alert..."
+	@python3 tools/check_tileset_parity.py

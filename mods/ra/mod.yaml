@@ -99,7 +99,7 @@ Sequences:
 TileSets:
 	ra|tilesets/snow.yaml
 	ra|tilesets/interior.yaml
-	ra|tilesets/temperat.yaml
+	rahd|tilesets/temperat.yaml
 	ra|tilesets/desert.yaml
 
 Cursors:
