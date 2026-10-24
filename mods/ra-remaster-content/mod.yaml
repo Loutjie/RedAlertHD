@@ -29,7 +29,7 @@ ContentSourcesModContent:
 					Attributes:
 						ArtworkStyle: remastered, classic
 						AudioStyle: remastered, classic
-	# ContentSelectorLogic reads QuickInstall.Path unconditionally, so the node must exist.
+	# ContentSelectorLogic and the Fluent lint both dereference QuickInstall, so the node must exist.
 	# It has no Path: the remaster source does not need a download.
 	QuickInstall: modcontent-download-quickinstall
 

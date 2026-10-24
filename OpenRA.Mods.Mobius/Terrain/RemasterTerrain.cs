@@ -45,8 +45,14 @@ namespace OpenRA.Mods.Mobius.Terrain
 		public readonly Dictionary<int, string[]> RemasteredCompositeFilenames;
 		public readonly string Palette;
 
+		[Desc("Classic (DefaultTerrain) name for Filename, used when Filename is not set.")]
+		public readonly string Images;
+
 		public RemasterTerrainTemplateInfo(ITerrainInfo terrainInfo, MiniYaml my)
-			: base(terrainInfo, my) { }
+			: base(terrainInfo, my)
+		{
+			Filename ??= Images;
+		}
 	}
 
 	public class RemasterTerrain : ITemplatedTerrainInfo, ITerrainInfoNotifyMapCreated
