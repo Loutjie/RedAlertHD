@@ -184,35 +184,55 @@ Archive: `DATA\ART\TEXTURES\SRGB\RED_ALERT\UNITS\2TNK.ZIP` in `TEXTURES_RA_SRGB.
 
 - Members: `2tnk-0000.tga` .. `2tnk-0063.tga` plus a matching `2tnk-NNNN.meta` each: 64 frames
   (128 members), all frames have both files.
-- Layout, from naming and by analogy with the stock sprite (`2tnk.shp`: `idle` 32 facings, `turret`
-  `Start: 32`, 32 facings) and `1TNK.ZIP` (same 0..63 naming): **body = frames 0..31, turret = frames
-  32..63**, so `RemasteredStart: 0` / `RemasteredLength: 32` for body and `32` / `32` for turret.
-  The `.meta` files are JSON `{"size":[192,192],"crop":[x,y,w,h]}`; the body and turret share a
-  192x192 canvas (spot checks on frames 0 and 32).
+- **Verified layout: Remastered frame N is classic `2tnk.shp` shape N, for N = 0..63.** Source: the
+  Remastered game's own shape table `DATA\XML\TILESETS\RA_UNITS.XML` (in `CONFIG.MEG`) has 64 `2TNK`
+  tiles, and the tile with `<Shape>N</Shape>` lists exactly one frame, `2tnk\2tnk-NNNN.tga`.
+  `TD_UNITS.XML` maps `MTNK` the same way, which is why TD HD's `mtnk` override needs no
+  `RemasteredStart`/`RemasteredLength`.
+- So the stock indexing carries over unchanged: body `idle` = frames 0..31, `turret` = `Start: 32`,
+  32 facings, both with stock `UseClassicFacings: True`. No `RemasteredStart`, `RemasteredLength`
+  or per-facing `RemasteredOffset` is needed. Visual spot check (TGAs converted to PNG in scratch):
+  frame 0 faces north, frame 8 is side-on and turret frame 40 points its barrel left, so the order is
+  counter-clockwise from north, as in classic Westwood shapes and as in `MTNK.ZIP`.
+- Per-frame placement comes from the `.meta` files, which the engine applies itself.
+  They are JSON `{"size":[192,192],"crop":[left,top,right,bottom]}`. `ShpRemasteredLoader` reads
+  them as `Rectangle.FromLTRB`, and each cropped TGA is placed inside its frame canvas. All 64 frames
+  share one 192x192 canvas (body and turret alike, as in `MTNK.ZIP`), so the turret stays registered
+  on the hull without sequence offsets. The 2TNK body crops equal MTNK's on the sampled frames
+  (0, 8, 16, 31).
 - **No separate husk archive** for 2tnk: nothing matching `2TNK*`, `*HUSK*` or `*DESTROYED*` exists in
-  `TEXTURES_RA_SRGB.MEG`. `2tnk.destroyed` must reuse `2TNK.ZIP` (as `mtnk.destroyed` reuses
-  `MTNK.ZIP` in `mods/cnc`).
-- Not verified here: whether frame 0 faces north and the direction of rotation match the stock
-  facing order; the TD `MTNK.ZIP` convention is the reference when wiring sequences.
+  `TEXTURES_RA_SRGB.MEG`. `2tnk.destroyed` reuses `2TNK.ZIP` (as `mtnk.destroyed` reuses
+  `MTNK.ZIP` in `mods/cnc`), keeping the stock `ZOffset: -512`.
+- `TEXTURES_PATCHES_SRGB.MEG` and `TEXTURES_COMMON_SRGB.MEG` contain no `2TNK` or `GUNFIRE` entries, so
+  nothing patches these archives.
 
 ## Muzzle flash
 
 Stock RA's `2tnk` `muzzle` sequence (`engine/mods/ra/sequences/vehicles.yaml`) uses
-`Filename: gunfire2.shp`, `Length: 5`. The Remastered equivalent is the RA VFX archive
-`DATA\ART\TEXTURES\SRGB\RED_ALERT\VFX\GUNFIRE.ZIP` (there is no `GUNFIRE2` in the RA VFX list).
+`Filename: gunfire2.shp`, `Length: 5`. `gunfire2.shp` is an OpenRA file in `engine/mods/ra/bits`
+(5 frames, 16x16), not a Westwood original. The Remastered equivalent is
+`DATA\ART\TEXTURES\SRGB\RED_ALERT\VFX\GUNFIRE.ZIP`. `RA_VFX.XML` has only one gun-flash entry,
+`GUNFIRE`, and no `GUNFIRE2`.
 
 - Members: `gunfire-0000.tga` .. `gunfire-0009.tga` = 10 frames; `.meta` files exist only for frames
-  0, 1, 3, 4, 5, 6 and 9 (frames 2, 7 and 8 have a `.tga` but no `.meta`).
-- Frame 0 canvas is 85x85. Remastered frame count (10) differs from the stock sequence length (5), so
-  the muzzle override will need an explicit `RemasteredLength`/`RemasteredStart` choice. TD's
-  `mtnk` muzzle (`TIBERIAN_DAWN\VFX\GUNFIRE.ZIP`) is the precedent for a `muzzle` override.
+  0, 1, 3, 4, 5, 6 and 9 (frames 2, 7 and 8 are uncropped 85x85 TGAs, which the loader accepts).
+  `RA_VFX.XML` maps `GUNFIRE` shapes 0..9 one-to-one to these frames.
+- **The 10 frames are one continuous animation, not two variants and not doubled frames.** The flash
+  grows over frames 0..2, then turns to smoke that fades over frames 3..9 (visual check).
+- The RA archive is byte-identical to TD's `TIBERIAN_DAWN\VFX\GUNFIRE.ZIP`. TD HD's `mtnk` muzzle
+  plays all 10 frames, because stock TD declares `Length: *` and `RemasterSpriteSequence` inherits it.
+  Stock RA's `Length: 5` would cut the HD animation off after two smoke frames, so the RA override
+  sets `RemasteredLength: *` to play all 10, as TD HD does. Muzzle overlays are render-only
+  (`WithMuzzleOverlay`), so this does not affect rules parity.
 
 ## Reproduce
 
 Scratch tooling (not committed): a small .NET console referencing `engine/bin/OpenRA.Game.dll` and
 `OpenRA.Mods.Cnc.dll` opened each MIX with `MixLoader.MixFile(stream, name, candidateNames)`; a
 Python MEG v3 reader (header `<6I`, names table, then 20-byte records `<HIIIIH`) listed
-`TEXTURES_RA_SRGB.MEG` and `CONFIG.MEG` and read ZIP member names in memory.
+`TEXTURES_RA_SRGB.MEG` and `CONFIG.MEG` and read ZIP member names in memory. For the 2tnk and muzzle
+layout, the same reader extracted the two ZIPs and `RA_UNITS.XML`/`RA_VFX.XML` to a scratch directory
+outside the repo. A Python `xml.etree` pass then listed each `<Tile>`'s `Name`, `Shape` and `Frame`.
 
 ## Headless checks
 
