@@ -47,13 +47,23 @@ def mod_yaml_list(path, key):
     return items
 
 
-def referenced_files(mod_yaml, key, mod_dir_name="ra"):
+def referenced_files(mod_yaml, key):
+    """Files named by a mod.yaml list: `ra|` is stock RA, `rahd|` is this mod."""
+    dirs = {"ra": STOCK_MOD, "rahd": OUR_MOD}
     files = []
     for item in mod_yaml_list(mod_yaml, key):
         pkg, _, rel = item.partition("|")
-        if pkg == mod_dir_name:
-            files.append(os.path.join(STOCK_MOD, rel))
+        if pkg in dirs:
+            files.append(os.path.join(dirs[pkg], rel))
     return files
+
+
+def defined_names(mod_yaml):
+    names = set()
+    for key, kind in (("Rules", "rule"), ("Weapons", "weapon")):
+        for f in referenced_files(mod_yaml, key):
+            names |= {(kind, n) for n in top_level_names(f) if not n.startswith("^")}
+    return names
 
 
 def load_allow_list():
@@ -122,6 +132,18 @@ def run_utility(cwd, args, mod_arg):
     return p.stdout, None
 
 
+def compare(kind, name, s, o):
+    """Diff two flattened (path, value) lists; order is significant (trait order is tick order)."""
+    found = []
+    sd, od = dict(s), dict(o)
+    for path in sorted(set(sd) | set(od)):
+        if sd.get(path) != od.get(path):
+            found.append(f"{kind} {name}: {path}: stock={sd.get(path)!r} ours={od.get(path)!r}")
+    if s != o and not found:
+        found.append(f"{kind} {name}: same keys and values but different order or duplicate keys")
+    return found
+
+
 def resolve(kind, name):
     flag = "--resolved-rules" if kind == "rule" else "--resolved-weapons"
     stock, err_s = run_utility(ENGINE, [flag, name], "ra")
@@ -147,12 +169,10 @@ def main():
                             f"ours-only={[x for x in o if x not in s]}")
 
     # Names defined by stock RA
-    jobs = []
-    for f in referenced_files(stock_yaml, "Rules"):
-        jobs += [("rule", n) for n in top_level_names(f) if not n.startswith("^")]
-    for f in referenced_files(stock_yaml, "Weapons"):
-        jobs += [("weapon", n) for n in top_level_names(f) if not n.startswith("^")]
-    jobs = sorted(set(jobs))
+    stock_names = defined_names(stock_yaml)
+    jobs = sorted(stock_names)
+    for kind, name in sorted(defined_names(our_yaml) - stock_names):
+        failures.append(f"{kind} {name}: defined by this mod but not by stock RA")
 
     with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
         results = list(pool.map(lambda j: resolve(*j), jobs))
@@ -165,12 +185,7 @@ def main():
         o = flatten(strip_allowed(parse(ours), name, allowed))
         if s == o:
             continue
-        sd, od = dict(s), dict(o)
-        for path in sorted(set(sd) | set(od)):
-            if sd.get(path) != od.get(path):
-                failures.append(f"{kind} {name}: {path}: stock={sd.get(path)!r} ours={od.get(path)!r}")
-        if sorted(s) != sorted(o) and not any(f.startswith(f"{kind} {name}:") for f in failures):
-            failures.append(f"{kind} {name}: ordering or duplicate keys differ")
+        failures += compare(kind, name, s, o)
 
     if failures:
         print("parity FAILED")
