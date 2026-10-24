@@ -74,24 +74,25 @@ Packages:
 	data|Data/CNCDATA/RED_ALERT/CD1/REDALERT.MIX: ra-redalert
 	data|Data/CNCDATA/RED_ALERT/CD1/MAIN.MIX: ra-main
 	data|Data/CNCDATA/RED_ALERT/AFTERMATH/MAIN.MIX: ra-aftermath
-	ra-redalert|hires.mix
-	ra-redalert|local.mix
-	ra-redalert|lores.mix: lores
-	ra-redalert|speech.mix
+	# Stock ContentPackages order: the last mount wins for duplicate files.
 	ra-main|allies.mix
 	ra-main|conquer.mix
 	ra-main|interior.mix
-	ra-main|snow.mix
-	ra-main|temperat.mix
+	ra-redalert|lores.mix: lores
+	ra-redalert|hires.mix
+	ra-redalert|local.mix
 	ra-main|russian.mix
+	ra-main|snow.mix
 	ra-aftermath|sounds.mix
 	ra-main|sounds.mix
-	~ra-main|scores.mix
-	~ra-main|general.mix
+	ra-redalert|speech.mix
+	ra-main|temperat.mix
 	data|Data/CNCDATA/RED_ALERT/CD1/EXPAND2.MIX
 	data|Data/CNCDATA/RED_ALERT/CD1/LORES1.MIX
 	data|Data/CNCDATA/RED_ALERT/CD1/HIRES1.MIX
 	data|Data/CNCDATA/TIBERIAN_DAWN/CD1/DESERT.MIX
+	~ra-main|scores.mix
+	~ra-main|general.mix
 	data|Data/CONFIG.MEG
 	data|Data/TEXTURES_RA_SRGB.MEG
 	data|Data/TEXTURES_COMMON_SRGB.MEG

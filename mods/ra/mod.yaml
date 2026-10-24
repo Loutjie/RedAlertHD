@@ -38,28 +38,30 @@ FileSystem: RemasterFileSystem
 				data|Data/CNCDATA/RED_ALERT/CD1/REDALERT.MIX: ra-redalert
 				data|Data/CNCDATA/RED_ALERT/CD1/MAIN.MIX: ra-main
 				data|Data/CNCDATA/RED_ALERT/AFTERMATH/MAIN.MIX: ra-aftermath
-				ra-redalert|hires.mix
-				ra-redalert|local.mix
-				ra-redalert|lores.mix: lores
-				ra-redalert|speech.mix
+				# Same order as stock RA's ContentPackages: when two packages hold the same file the last mount wins
+				# (e.g. hires.mix must come after lores.mix, or the 32x24 sidebar icons replace the 64x48 ones).
 				ra-main|allies.mix
 				ra-main|conquer.mix
 				ra-main|interior.mix
-				ra-main|snow.mix
-				ra-main|temperat.mix
+				ra-redalert|lores.mix: lores
+				ra-redalert|hires.mix
+				ra-redalert|local.mix
 				ra-main|russian.mix
+				ra-main|snow.mix
 				# Aftermath's sounds.mix supplies the expansion .aud files that stock reads from content|expand.
 				# It also carries different dogw6.aud and h2obomb2.aud, so mount it before the base sounds.mix
 				# (last mount wins) to keep the base versions that stock RA plays.
 				ra-aftermath|sounds.mix
 				ra-main|sounds.mix
-				~ra-main|scores.mix
-				~ra-main|general.mix
+				ra-redalert|speech.mix
+				ra-main|temperat.mix
 				data|Data/CNCDATA/RED_ALERT/CD1/EXPAND2.MIX
 				data|Data/CNCDATA/RED_ALERT/CD1/LORES1.MIX
 				data|Data/CNCDATA/RED_ALERT/CD1/HIRES1.MIX
 				# Stock content|cnc/desert.mix is the Tiberian Dawn DESERT.MIX (RA's desert tileset).
 				data|Data/CNCDATA/TIBERIAN_DAWN/CD1/DESERT.MIX
+				~ra-main|scores.mix
+				~ra-main|general.mix
 				data|Data/CONFIG.MEG
 				data|Data/TEXTURES_RA_SRGB.MEG
 				data|Data/TEXTURES_COMMON_SRGB.MEG
