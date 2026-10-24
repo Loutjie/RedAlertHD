@@ -1,0 +1,12 @@
+2tnk:
+	Defaults:
+		RemasteredFilename: DATA\ART\TEXTURES\SRGB\RED_ALERT\UNITS\2TNK.ZIP
+	muzzle:
+		RemasteredFilename: DATA\ART\TEXTURES\SRGB\RED_ALERT\VFX\GUNFIRE.ZIP
+		RemasteredLength: *
+	icon:
+		RemasteredFilename:
+
+2tnk.destroyed:
+	Defaults:
+		RemasteredFilename: DATA\ART\TEXTURES\SRGB\RED_ALERT\UNITS\2TNK.ZIP

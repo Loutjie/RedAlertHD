@@ -178,5 +178,9 @@ endif
 test: all
 	@echo "Testing $(MOD_ID) mod MiniYAML..."
 	@./utility.sh --check-yaml
-	@echo "Testing remaster-content mod MiniYAML..."
-	@Mod=remaster-content ./utility.sh --check-yaml
+	@echo "Testing ra-remaster-content mod MiniYAML..."
+	@Mod=ra-remaster-content ./utility.sh --check-yaml
+	@echo "Checking $(MOD_ID) rules parity with stock Red Alert..."
+	@python3 tools/check_rules_parity.py
+	@echo "Checking $(MOD_ID) tileset parity with stock Red Alert..."
+	@python3 tools/check_tileset_parity.py

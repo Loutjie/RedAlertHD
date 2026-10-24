@@ -1,0 +1,104 @@
+Metadata:
+	Title: mod-title
+	Version: {DEV_VERSION}
+	Hidden: true
+
+FileSystem: DefaultFileSystem
+	Packages:
+		^EngineDir
+		^EngineDir|mods/common-content: content
+		^EngineDir|mods/common: common
+		^EngineDir|mods/ra: ra
+		$ra-remaster-content: rahdcontent
+		ra|uibits
+
+ContentSourcesModContent:
+	Mod: ra
+	Attributes:
+		ArtworkStyle:
+			remastered: modcontent-content-artwork-style-remastered
+			classic: modcontent-content-artwork-style-classic
+		AudioStyle:
+			remastered: modcontent-content-audio-style-remastered
+			classic: modcontent-content-audio-style-classic
+	ContentSources:
+		remaster: modcontent-source-remaster
+			Origins:
+				steam: Steam
+					AppId: 1213210
+					Attributes:
+						ArtworkStyle: remastered, classic
+						AudioStyle: remastered, classic
+	# ContentSelectorLogic and the Fluent lint both dereference QuickInstall, so the node must exist.
+	# It has no Path: the remaster source does not need a download.
+	QuickInstall: modcontent-download-quickinstall
+
+Rules:
+
+Cursors:
+	content|cursors.yaml
+
+Chrome:
+	ra|chrome.yaml
+
+Assemblies: OpenRA.Mods.Common.dll, OpenRA.Mods.Cnc.dll, OpenRA.Mods.Mobius.dll
+
+ChromeLayout:
+	rahdcontent|prompt.yaml
+
+Notifications:
+	content|notifications.yaml
+
+# ModContentLoadScreen opens the content prompt; a game load screen would try to start a shellmap.
+LoadScreen: ModContentLoadScreen
+	Image: ^EngineDir|mods/common-content/chrome.png
+	Image2x: ^EngineDir|mods/common-content/chrome-2x.png
+	Image3x: ^EngineDir|mods/common-content/chrome-3x.png
+
+ChromeMetrics:
+	common|metrics.yaml
+	ra|metrics.yaml
+
+FluentMessages:
+	common|fluent/common.ftl
+	content|fluent/content.ftl
+	content|fluent/chrome.ftl
+	rahdcontent|prompt.ftl
+
+Fonts:
+	Tiny:
+		Font: common|FreeSans.ttf
+		Size: 10
+		Ascender: 8
+	TinyBold:
+		Font: common|FreeSansBold.ttf
+		Size: 10
+		Ascender: 8
+	Small:
+		Font: common|FreeSans.ttf
+		Size: 12
+		Ascender: 9
+	Regular:
+		Font: common|FreeSans.ttf
+		Size: 14
+		Ascender: 11
+	Bold:
+		Font: common|FreeSansBold.ttf
+		Size: 14
+		Ascender: 11
+	MediumBold:
+		Font: common|FreeSansBold.ttf
+		Size: 18
+		Ascender: 14
+	BigBold:
+		Font: common|FreeSansBold.ttf
+		Size: 24
+		Ascender: 18
+
+SoundFormats:
+
+SpriteFormats: PngSheet
+
+TerrainFormat: DefaultTerrain
+
+SpriteSequenceFormat: DefaultSpriteSequence

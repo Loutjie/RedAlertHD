@@ -1,0 +1,104 @@
+# Remastered shroud: SHADOW-00..47 match the 48 frames of the classic shadow.shp.
+# Fog reuses the same frames at half alpha; classic artwork keeps the stock fog palette.
+shroud:
+	Defaults:
+		RemasteredFilenamePattern: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SHROUD\SHADOW-{0:D2}.DDS
+			Count: 48
+		RemasteredPremultiplied: false
+	shroud:
+	fog:
+		Filename: shadow.shp
+		Length: *
+		RemasteredAlpha: 0.5
+
+# Placement footprint and order targets: same frame layout as the classic trans.icn
+# (0 = valid, 1 = select, 2 = invalid), copied from Tiberian Dawn HD. A pattern without {0}
+# repeats the one image so Start 1 and Start 2 still resolve.
+overlay:
+	Defaults:
+		RemasteredPremultiplied: false
+	build-valid:
+		RemasteredFilename: DATA\ART\TEXTURES\SRGB\COMMON\MISC\PLACEMENT_GOOD.TGA
+	build-invalid:
+		RemasteredFilenamePattern: DATA\ART\TEXTURES\SRGB\COMMON\MISC\PLACEMENT_BAD.TGA
+			Count: 3
+	target-valid:
+		RemasteredFilename: DATA\ART\TEXTURES\SRGB\COMMON\MISC\PLACEMENT_GOOD.TGA
+	target-select:
+		RemasteredFilenamePattern: DATA\ART\TEXTURES\SRGB\COMMON\MISC\PLACEMENT_GOOD.TGA
+			Count: 2
+	target-invalid:
+		RemasteredFilenamePattern: DATA\ART\TEXTURES\SRGB\COMMON\MISC\PLACEMENT_BAD.TGA
+			Count: 3
+
+editor-overlay:
+	Defaults:
+		RemasteredPremultiplied: false
+	copy:
+		RemasteredFilename: DATA\ART\TEXTURES\SRGB\COMMON\MISC\PLACEMENT_GOOD.TGA
+	paste:
+		RemasteredFilenamePattern: DATA\ART\TEXTURES\SRGB\COMMON\MISC\PLACEMENT_BAD.TGA
+			Count: 3
+
+# Remastered ore and gems: HD frame N = classic shape N (RA_TERRAIN_*.XML), and the frame counts equal
+# the classic ones (gold 12, gem 3), so ResourceRenderer's density-to-frame mapping is unchanged.
+# Keyed by tileset: DESERT and INTERIOR keep the classic sprites.
+resources:
+	Defaults:
+		RemasteredPremultiplied: false
+	gold01:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\GOLD01.TEM\GOLD01.TEM-{0:D4}.DDS
+				Count: 12
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\GOLD01.SNO\GOLD01.SNO-{0:D4}.DDS
+				Count: 12
+	gold02:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\GOLD02.TEM\GOLD02.TEM-{0:D4}.DDS
+				Count: 12
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\GOLD02.SNO\GOLD02.SNO-{0:D4}.DDS
+				Count: 12
+	gold03:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\GOLD03.TEM\GOLD03.TEM-{0:D4}.DDS
+				Count: 12
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\GOLD03.SNO\GOLD03.SNO-{0:D4}.DDS
+				Count: 12
+	gold04:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\GOLD04.TEM\GOLD04.TEM-{0:D4}.DDS
+				Count: 12
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\GOLD04.SNO\GOLD04.SNO-{0:D4}.DDS
+				Count: 12
+	gem01:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\GEM01.TEM\GEM01.TEM-{0:D4}.DDS
+				Count: 3
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\GEM01.SNO\GEM01.SNO-{0:D4}.DDS
+				Count: 3
+	gem02:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\GEM02.TEM\GEM02.TEM-{0:D4}.DDS
+				Count: 3
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\GEM02.SNO\GEM02.SNO-{0:D4}.DDS
+				Count: 3
+	gem03:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\GEM03.TEM\GEM03.TEM-{0:D4}.DDS
+				Count: 3
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\GEM03.SNO\GEM03.SNO-{0:D4}.DDS
+				Count: 3
+	gem04:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\GEM04.TEM\GEM04.TEM-{0:D4}.DDS
+				Count: 3
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\GEM04.SNO\GEM04.SNO-{0:D4}.DDS
+				Count: 3
+
+# Ore mine: the Remastered archive is named OREMINE (one frame, like the classic mine.tem/mine.sno).
+mine:
+	idle:
+		RemasteredTilesetFilenamesPattern:
+			TEMPERAT: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\TEMPERATE\OREMINE.TEM\OREMINE.TEM-{0:D4}.DDS
+			SNOW: DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\SNOW\OREMINE.SNO\OREMINE.SNO-{0:D4}.DDS
+		RemasteredPremultiplied: false

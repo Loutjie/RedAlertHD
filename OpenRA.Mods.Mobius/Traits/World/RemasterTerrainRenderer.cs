@@ -29,17 +29,37 @@ namespace OpenRA.Mods.Mobius.Traits
 		bool ITiledTerrainRendererInfo.ValidateTileSprites(ITemplatedTerrainInfo terrainInfo, Action<string> onError)
 		{
 			var failed = false;
-			var tileCache = new RemasterTileCache((RemasterTerrain)terrainInfo);
+			var remasterTerrain = (RemasterTerrain)terrainInfo;
+			var tileCache = new RemasterTileCache(remasterTerrain);
 			foreach (var t in terrainInfo.Templates)
 			{
 				var templateInfo = (RemasterTerrainTemplateInfo)t.Value;
+
+				// Classic artwork, and classic-only templates (no Remastered art), use one frame per tile from Filename
+				if (!remasterTerrain.UseRemasteredTerrain || (templateInfo.RemasteredFilenames == null && templateInfo.RemasteredCompositeFilenames == null))
+				{
+					for (var i = 0; i < t.Value.TilesCount; i++)
+					{
+						if (t.Value[i] != null && !tileCache.HasTileSprite(new TerrainTile(t.Key, (byte)i), 0))
+						{
+							onError($"\tTemplate `{t.Key}` tile {i} references frame {i} of `{templateInfo.Filename}` that does not exist.");
+							failed = true;
+						}
+					}
+
+					continue;
+				}
+
+				if (templateInfo.RemasteredFilenames == null)
+					continue;
+
 				foreach (var kv in templateInfo.RemasteredFilenames)
 				{
 					for (var i = 0; i < kv.Value.Length; i++)
 					{
 						if (!tileCache.HasTileSprite(new TerrainTile(t.Key, (byte)kv.Key), i))
 						{
-							onError($"\tTemplate `{t.Key}` tile {kv.Key} references sprite `{templateInfo.RemasteredFilenames[i]}` that does not exist.");
+							onError($"\tTemplate `{t.Key}` tile {kv.Key} references sprite `{kv.Value[i]}` that does not exist.");
 							failed = true;
 						}
 					}
