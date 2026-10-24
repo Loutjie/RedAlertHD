@@ -46,7 +46,7 @@ and a `local mix database.dat`; the base game does not need them.
 | `expand/hires1.mix` | loose file `Data/CNCDATA/RED_ALERT/CD1/HIRES1.MIX` |
 | `expand/*.aud` (24 files: `chrotnk1`, `fixit1`, `jburn1`, `jchrge1`, `jcrisp1`, `jdance1`, `jjuice1`, `jjump1`, `jlight1`, `jpower1`, `jshock1`, `jyes1`, `madchrg2`, `madexplo`, `mboss1`, `mhear1`, `mhotdig1`, `mhowdy1`, `mhuh1`, `mlaff1`, `mrise1`, `mwrench1`, `myeehaw1`, `myes1`) | all 24 found inside `Data/CNCDATA/RED_ALERT/AFTERMATH/MAIN.MIX` > `sounds.mix` (Aftermath's sounds MIX). `COUNTERSTRIKE/MAIN.MIX` > `sounds.mix` has none of them. Stock extracts this nested MIX to `expand/sounds-aftermath.mix`. |
 | `expand` (folder) | no folder; `EXPAND.MIX` (CD1) exists but is not in the stock list and no name from the list resolved in it |
-| `cnc/desert.mix` | **absent from RA folders**. It is a Tiberian Dawn file: `Data/CNCDATA/TIBERIAN_DAWN/CD1/DESERT.MIX`. Not needed for Temperate-only milestone 1. |
+| `cnc/desert.mix` | absent from RA folders. It is the Tiberian Dawn file `Data/CNCDATA/TIBERIAN_DAWN/CD1/DESERT.MIX` (stock's `cnc95.yaml` installer copies the same `DESERT.MIX`), mounted directly. It holds the `.des` tiles of RA's desert tileset (`p01.des` etc.); without it `--check-missing-sprites` fails the DESERT tileset. |
 | `movies` (folder, optional) | not inventoried (movies are `Data/MOVIES_RA.MEG` and `movies1.mix`); out of scope |
 
 All stock names in the table were resolved with the engine's own `MixLoader.MixFile` (handles the
@@ -84,13 +84,14 @@ Packages:
 	ra-main|snow.mix
 	ra-main|temperat.mix
 	ra-main|russian.mix
+	ra-aftermath|sounds.mix
 	ra-main|sounds.mix
 	~ra-main|scores.mix
 	~ra-main|general.mix
 	data|Data/CNCDATA/RED_ALERT/CD1/EXPAND2.MIX
 	data|Data/CNCDATA/RED_ALERT/CD1/LORES1.MIX
 	data|Data/CNCDATA/RED_ALERT/CD1/HIRES1.MIX
-	ra-aftermath|sounds.mix
+	data|Data/CNCDATA/TIBERIAN_DAWN/CD1/DESERT.MIX
 	data|Data/CONFIG.MEG
 	data|Data/TEXTURES_RA_SRGB.MEG
 	data|Data/TEXTURES_COMMON_SRGB.MEG
@@ -105,17 +106,29 @@ so `ra-redalert|lores.mix: lores` must keep `: lores`. The other aliases in stoc
 
 Optional mounts: stock marks `~content|movies`, `~content|scores.mix` and `~content|general.mix`
 optional (a missing file must not fail loading); the snippet keeps `~` on scores and general. Movies
-are not mounted in milestone 1. `ra|bits` and `ra|bits/desert` in stock are mod-provided system
+are not mounted in milestone 1.
+
+Mount order of the two `sounds.mix` files (verified 2026-10-24). The engine resolves a name from the
+package mounted last. Every one of the 116 names in the base `CD1/MAIN.MIX > sounds.mix` is also in
+Aftermath's `sounds.mix` (142 names). 114 of them are byte-identical, but `dogw6.aud` and `h2obomb2.aud`
+differ, and stock uses both (`audio/voices.yaml` dog `Burned`/`Zapped`, `weapons/ballistics.yaml`
+`ImpactSounds`). Stock never mounts Aftermath's `sounds.mix`, only the 24 expansion `.aud` files
+from it (`content|expand`), so stock plays the base versions. The Aftermath MIX is therefore mounted
+**before** the base `sounds.mix`, so the base copy wins every shared name and Aftermath adds only its
+26 extra names (the 24 listed above, plus `buzzy1.aud` and `shktrop1.aud`). `ra|bits` and `ra|bits/desert` in stock are mod-provided system
 packages mounted after content so they can override it; they are not Remastered content and need no
 inventory entry.
 
 The explicit names (`ra-redalert`, `ra-main`, `ra-aftermath`) are chosen here; any unused names work.
 `PackageFormats` must include `Mix` (stock RA has only `Mix`) and `MegV3`, `ZipFile` for the HD
 archives, as `mods/cnc/mod.yaml` does (`Mix, MegV3, ZipFile, ISO9660`). Nested MIX children are
-located by filename hash, so the lower-case stock names above resolve. Points to verify when the mod
-loads: the Aftermath `sounds.mix` mounted last may shadow names also present in the base `sounds.mix`
-(the 24 `.aud` names are expansion-only in stock), and the same-named top-level `MAIN.MIX` files in
-three folders must not share an explicit name.
+located by filename hash, so the lower-case stock names above resolve. The same-named top-level `MAIN.MIX`
+files in the three folders must not share an explicit name.
+
+Name resolution relies on `engine/global mix database.dat`, which is mounted through the `^EngineDir`
+system package. Without it the outer and nested MIX files report no contents, and every nested mount fails.
+`ContentSourcesFileSystem.Mount` swallows per-package mount exceptions, so a broken package path shows
+up only as missing sprites in `--check-missing-sprites`, not as a load error.
 
 Remastered artwork is addressed in sequences with `RemasteredFilename:` using the in-MEG path, as in
 `mods/cnc/sequences/vehicles-overrides.yaml`.
@@ -169,3 +182,39 @@ Scratch tooling (not committed): a small .NET console referencing `engine/bin/Op
 `OpenRA.Mods.Cnc.dll` opened each MIX with `MixLoader.MixFile(stream, name, candidateNames)`; a
 Python MEG v3 reader (header `<6I`, names table, then 20-byte records `<HIIIIH`) listed
 `TEXTURES_RA_SRGB.MEG` and `CONFIG.MEG` and read ZIP member names in memory.
+
+## Headless checks
+
+`OpenRA.Utility` mounts Remastered content only if the support-dir `settings.yaml` has a
+`ContentSource@ra` node. This is the node the in-game source selector writes. The utility takes no
+`Key=Value` settings overrides (`Game.InitializeSettings(Arguments.Empty)`). On macOS, both the support
+dir (`~/Library/Application Support/OpenRA`) and the Steam lookup
+(`~/Library/Application Support/Steam`) come from `$HOME`. So run the utility with `HOME` set to a
+scratch directory that holds a settings file and a Steam folder pointing at the real install.
+This never writes to the real support dir or the Steam folder:
+
+```sh
+H=/private/tmp/claude-501/rahd-scratch/home-content     # any scratch path
+STEAM="$HOME/Library/Application Support/Steam"
+mkdir -p "$H/Library/Application Support/OpenRA" "$H/Library/Application Support/Steam/steamapps/common"
+printf 'ContentSource@ra:\n\tContentSource: remaster\n\tArtworkStyle: remastered\n\tAudioStyle: classic\n' \
+	> "$H/Library/Application Support/OpenRA/settings.yaml"
+printf '"AppState"\n{\n\t"appid"\t\t"1213210"\n\t"StateFlags"\t\t"4"\n\t"installdir"\t\t"CnCRemastered"\n}\n' \
+	> "$H/Library/Application Support/Steam/steamapps/appmanifest_1213210.acf"
+ln -sfn "$STEAM/steamapps/common/CnCRemastered" "$H/Library/Application Support/Steam/steamapps/common/CnCRemastered"
+
+HOME="$H" ./utility.sh --check-missing-sprites    # exit 0 = every classic and HD sprite resolves
+HOME="$H" ./utility.sh --check-yaml
+```
+
+- `ArtworkStyle: classic` in that settings file checks the classic-art path instead (no terrain upscale).
+- Why the scratch app manifest: `SteamContentOrigin` accepts an install only if its
+  `appmanifest_1213210.acf` has `"StateFlags" "4"` (fully installed). The manifest on this Mac is a
+  66-byte stub with only `appid` and `installdir`, so the real one is rejected. That also means the
+  in-game source selector will report no source until `"StateFlags"		"4"` is added to the real
+  manifest. Steam itself is not installed here, so nothing else writes that file.
+- **Missing install:** point `HOME` at an empty directory: `HOME=<empty dir> ./utility.sh --check-yaml`.
+  With no settings and no Steam folder, it exits 0 with no errors. `--check-missing-sprites` then
+  fails with `blank.png not found`, the expected "no content mounted" result.
+- The same pattern works for Tiberian Dawn HD (`Mod=cnc`). Its settings node is `ContentSource@cnc`
+  with `ArtworkStyle`, `AudioLanguage`, `AudioStyle` and `MusicStyle`.

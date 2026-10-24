@@ -21,6 +21,10 @@ FileSystem: RemasterFileSystem
 		ra|bits/desert
 		rahd|bits
 	SourceSelectorMod: ra-remaster-content
+	# Keep stock RA's Voices/Notifications/Music lists (the defaults are Tiberian Dawn HD's audio files).
+	RemasterVoices:
+	RemasterNotifications:
+	RemasterMusic:
 	ContentSources:
 		remaster:
 			Origins:
@@ -44,13 +48,18 @@ FileSystem: RemasterFileSystem
 				ra-main|snow.mix
 				ra-main|temperat.mix
 				ra-main|russian.mix
+				# Aftermath's sounds.mix supplies the expansion .aud files that stock reads from content|expand.
+				# It also carries different dogw6.aud and h2obomb2.aud, so mount it before the base sounds.mix
+				# (last mount wins) to keep the base versions that stock RA plays.
+				ra-aftermath|sounds.mix
 				ra-main|sounds.mix
 				~ra-main|scores.mix
 				~ra-main|general.mix
 				data|Data/CNCDATA/RED_ALERT/CD1/EXPAND2.MIX
 				data|Data/CNCDATA/RED_ALERT/CD1/LORES1.MIX
 				data|Data/CNCDATA/RED_ALERT/CD1/HIRES1.MIX
-				ra-aftermath|sounds.mix
+				# Stock content|cnc/desert.mix is the Tiberian Dawn DESERT.MIX (RA's desert tileset).
+				data|Data/CNCDATA/TIBERIAN_DAWN/CD1/DESERT.MIX
 				data|Data/CONFIG.MEG
 				data|Data/TEXTURES_RA_SRGB.MEG
 				data|Data/TEXTURES_COMMON_SRGB.MEG
