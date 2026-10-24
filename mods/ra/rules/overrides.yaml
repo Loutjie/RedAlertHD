@@ -5,5 +5,5 @@
 		FogVariants: fog
 
 ^Palettes:
-	PlayerColorShift:
+	RemasterPlayerColorShift:
 		BasePalette: player

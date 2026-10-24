@@ -29,6 +29,10 @@ Milestone 1 edits these files that are shared with the Tiberian Dawn HD mod (eac
 - `OpenRA.Mods.Mobius/FileSystem/RemasterFileSystemLoader.cs`: audio manifests are data-driven.
 - `OpenRA.Mods.Mobius/Traits/World/RemasterTerrainRenderer.cs`: validation of classic templates.
 
+New shared file: `OpenRA.Mods.Mobius/Traits/Palettes/RemasterPlayerColorShift.cs`, a `PlayerColorShift`
+that is always constructed after the player palettes. RA's campaign and shell maps swap in
+`IndexedPlayerPalette` through map rules, which would otherwise come after the shift.
+
 ## Asset Installation
 
 Red Alert HD loads assets directly from an existing digital installation of the C&C Remastered Collection.

@@ -7,5 +7,5 @@ EditorWorld:TerrainRenderer  # ^BaseWorld is also inherited by EditorWorld; map 
 EditorWorld:RemasterTerrainRenderer  # map editor terrain drawing only; render-only, no effect on simulation
 World:ShroudRenderer.FogVariants  # selects which sprite sequence draws fog edges; drawing only, shroud/fog state is computed by the Shroud trait
 EditorWorld:ShroudRenderer.FogVariants  # map editor only; drawing only
-World:PlayerColorShift  # shifts the hue of RGBA sprites in the player palette to the player colour; palette/rendering only
-EditorWorld:PlayerColorShift  # map editor palette only; rendering only
+World:RemasterPlayerColorShift  # shifts the hue of RGBA sprites in the player palette to the player colour; palette/rendering only
+EditorWorld:RemasterPlayerColorShift  # map editor palette only; rendering only
