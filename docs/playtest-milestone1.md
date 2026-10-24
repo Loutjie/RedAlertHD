@@ -30,6 +30,8 @@ Milestone 1 has not been seen running yet. Everything below is the checklist for
 - Only the Temperate tileset is HD. Snow, Interior and Desert maps load with upscaled classic
   terrain. This is the intended milestone-1 behaviour.
 - Only `2tnk` (Allied Medium Tank) is HD. Every other unit and building is upscaled classic art.
+- Trees, ore, gems, the ore mine and the building-placement overlay are HD on Temperate. On Snow,
+  the `t15` and `tc01`..`tc05` husks stay classic (their Snow archives are incomplete).
 - The `2tnk` muzzle flash plays all 10 HD frames, so it lasts about twice as long as stock. This is
   cosmetic and does not affect sync.
 - Audio is classic.
@@ -40,6 +42,9 @@ Milestone 1 has not been seen running yet. Everything below is the checklist for
 - The mod starts, finds the Remastered install, and loads a stock RA skirmish map on Temperate.
 - Terrain is HD; a Medium Tank is HD in all 32 facings, turret rotates, fires with HD muzzle,
   leaves an HD husk.
+- Trees, ore, gems and the ore mine are HD and sit where the classic ones did (no shift against
+  the terrain grid); destroying a tree plays its burn-down. Placing a building shows the HD
+  green/red footprint.
 - Other units/buildings visible (upscaled classic).
 - Host a LAN game in this build; join from stock OpenRA RA `playtest-20261011`; play 5 minutes
   without a desync.

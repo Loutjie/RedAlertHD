@@ -16,6 +16,7 @@ the LAN setup against stock OpenRA RA `playtest-20261011`, and the headless chec
 
 - Only the Temperate tileset is HD. Snow, Interior and Desert maps load with upscaled classic terrain.
 - Only the Allied Medium Tank (`2tnk`) is HD. All other units and buildings are upscaled classic art.
+- Trees, ore, gems, the ore mine and the building-placement overlay are HD on Temperate (and on Snow, except a few tree husks). Desert and Interior keep classic art for them.
 - The `2tnk` muzzle flash plays all 10 HD frames (about twice the stock duration, cosmetic only).
 - Audio is classic. The content selector still shows an `AudioStyle` choice, but Red Alert's Remastered audio lists are empty in milestone 1, so choosing `remastered` changes nothing.
 - Rules, weapons, maps and AI are identical to stock Red Alert apart from a written-down list of render-only overrides.

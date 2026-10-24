@@ -97,6 +97,7 @@ Sequences:
 	ra|sequences/misc.yaml
 	rahd|sequences/misc-overrides.yaml
 	ra|sequences/decorations.yaml
+	rahd|sequences/decorations-overrides.yaml
 
 TileSets:
 	ra|tilesets/snow.yaml

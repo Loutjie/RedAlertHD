@@ -225,6 +225,48 @@ Stock RA's `2tnk` `muzzle` sequence (`engine/mods/ra/sequences/vehicles.yaml`) u
   sets `RemasteredLength: *` to play all 10, as TD HD does. Muzzle overlays are render-only
   (`WithMuzzleOverlay`), so this does not affect rules parity.
 
+## Trees, ore, ore mine and placement overlay
+
+Sequences: `mods/ra/sequences/decorations-overrides.yaml` (trees) and
+`mods/ra/sequences/misc-overrides.yaml` (`overlay`, `editor-overlay`, `resources`, `mine`).
+
+- **Archives.** `TEXTURES_RA_SRGB.MEG` holds one DDS per frame (DXT5, no `.meta`) under
+  `DATA\ART\TEXTURES\SRGB\RED_ALERT\TERRAIN\<TEMPERATE|SNOW>\<NAME>.<TEM|SNO>\<NAME>.<TEM|SNO>-NNNN.DDS`.
+  Note the folder carries the extension (`T01.TEM\T01.TEM-0000.DDS`), unlike TD's `T01\T01.TEM-0000.DDS`.
+  There is no `DESERT` folder and no tree or ore art under `INTERIOR`.
+- **Frame mapping.** `RA_TERRAIN_TEMPERATE.XML` and `RA_TERRAIN_SNOW.XML` (`CONFIG.MEG`) map every
+  shape N of `T01`..`T17`, `TC01`..`TC05`, `GOLD01`..`GOLD04`, `GEM01`..`GEM04` and `OREMINE` to
+  `-000N`. HD frame counts equal the classic SHP frame counts (read from `temperat.mix`/`snow.mix` in
+  `CD1\MAIN.MIX`):
+
+  | Image | Classic frames | HD Temperate | HD Snow |
+  | --- | --- | --- | --- |
+  | `t01`..`t17` (not t04/t09) | 10 (t11, t15 Temperate: 11) | 10 (T11, T15: 11) | 10, but `T15.SNO` lacks `-0009` (has `-0010`) |
+  | `tc01`..`tc05` | 10 | 10 | **1** (`-0000` only) |
+  | `gold01`..`gold04` | 12 | 12 | 12 |
+  | `gem01`..`gem04` | 3 | 3 | 3 |
+  | `mine` (HD name `OREMINE`) | 1 | 1 | 1 |
+
+  Tree images use frame 0; `.husk` images use 1 (`idle`) and 2..9 (`dead`). So alive trees load
+  `Count: 1`, husks `Count: 10`. `t15.husk` and `tc01..05.husk` have no `SNOW` key and keep the
+  classic sprite on Snow. `resources` frame counts equal classic, so ResourceRenderer's density
+  frames are unchanged and no `Length` changes.
+- **Size and offset.** Every HD frame is the classic frame size x 128/24 (48x48 -> 256x256,
+  72x48 -> 384x256, 96x72 -> 512x384, 24x24 -> 128x128), except `T08` (48x24 -> 512x256, twice that),
+  which gets `RemasteredTilesetScales` 0.5 like TD HD's `t08`. It is per tileset because
+  `RemasteredScale` would also halve the classic fallback. Alpha bounding boxes of the HD frames
+  match the classic opaque bounding boxes scaled by 128/24 within a few HD pixels (`t01`, `t08`,
+  `t17`, `tc01`, `tc04`, `gold01`, `gem01`, `mine`), so no `RemasteredOffset` is set. TD HD sets no
+  offset on its trees either.
+- **Tileset keys.** Patterns sit under `RemasteredTilesetFilenamesPattern` keyed `TEMPERAT`/`SNOW`
+  with no untyped default. A tileset without a key falls back to the classic sprite in
+  `RemasterSpriteSequence`, so Desert (`tc01.des`, `t08.des`) and Interior keep classic art instead
+  of showing Temperate HD art.
+- **Placement overlay.** RA's `trans.icn` layout matches TD's (0 valid, 1 select, 2 invalid), so
+  `overlay` and `editor-overlay` copy TD HD's mapping to
+  `TEXTURES_COMMON_SRGB.MEG` `DATA\ART\TEXTURES\SRGB\COMMON\MISC\PLACEMENT_GOOD.TGA`/`PLACEMENT_BAD.TGA`.
+- Not mapped: `t04`/`t09` (desert-only classic art, no HD desert archive), `gmine` (no HD archive).
+
 ## Reproduce
 
 Scratch tooling (not committed): a small .NET console referencing `engine/bin/OpenRA.Game.dll` and
