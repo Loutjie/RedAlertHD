@@ -60,6 +60,12 @@ already-mounted package `explicit` to open `path` as a child package
 (`engine/OpenRA.Game/FileSystem/FileSystem.cs`: `TryGetPackageContaining` -> `parent.OpenPackage`).
 So mount the outer MIX with an explicit name, then mount children through that name, in order:
 
+Target key: this goes under `FileSystem: RemasterFileSystem` > `ContentSources:` > `<source>:` >
+`Packages:` (the key `ContentSourcesFileSystem` reads at `source.Packages` and mounts in order), exactly
+like `mods/cnc/mod.yaml` line 52 (`remaster:` source with a `steam` origin, `Mount: data`). It is not
+stock RA's `ContentInstallerFileSystem` `ContentPackages` list. `SystemPackages` (mod-provided
+folders, `$ra: ra`, `^EngineDir|mods/common: common`) and `OverridePackages` stay separate keys.
+
 ```yaml
 PackageFormats: Mix, MegV3, ZipFile
 
@@ -70,7 +76,7 @@ Packages:
 	data|Data/CNCDATA/RED_ALERT/AFTERMATH/MAIN.MIX: ra-aftermath
 	ra-redalert|hires.mix
 	ra-redalert|local.mix
-	ra-redalert|lores.mix
+	ra-redalert|lores.mix: lores
 	ra-redalert|speech.mix
 	ra-main|allies.mix
 	ra-main|conquer.mix
@@ -79,8 +85,8 @@ Packages:
 	ra-main|temperat.mix
 	ra-main|russian.mix
 	ra-main|sounds.mix
-	ra-main|scores.mix
-	ra-main|general.mix
+	~ra-main|scores.mix
+	~ra-main|general.mix
 	data|Data/CNCDATA/RED_ALERT/CD1/EXPAND2.MIX
 	data|Data/CNCDATA/RED_ALERT/CD1/LORES1.MIX
 	data|Data/CNCDATA/RED_ALERT/CD1/HIRES1.MIX
@@ -89,6 +95,19 @@ Packages:
 	data|Data/TEXTURES_RA_SRGB.MEG
 	data|Data/TEXTURES_COMMON_SRGB.MEG
 ```
+
+Stock explicit aliases: the only one stock gives a content package is `content|lores.mix: lores`
+(`engine/mods/ra/mod.yaml:23`), and stock sequences depend on it (`Filename: lores|atomicon.shp`,
+`lores|pbmbicon.shp`, `lores|camicon.shp`, `lores|pinficon.shp` in `engine/mods/ra/sequences/misc.yaml`),
+so `ra-redalert|lores.mix: lores` must keep `: lores`. The other aliases in stock are `$ra: ra`,
+`common` and `content`, which are system packages/folders, not content MIX files. A grep of
+`engine/mods/ra` finds no other `name|` file prefix in use.
+
+Optional mounts: stock marks `~content|movies`, `~content|scores.mix` and `~content|general.mix`
+optional (a missing file must not fail loading); the snippet keeps `~` on scores and general. Movies
+are not mounted in milestone 1. `ra|bits` and `ra|bits/desert` in stock are mod-provided system
+packages mounted after content so they can override it; they are not Remastered content and need no
+inventory entry.
 
 The explicit names (`ra-redalert`, `ra-main`, `ra-aftermath`) are chosen here; any unused names work.
 `PackageFormats` must include `Mix` (stock RA has only `Mix`) and `MegV3`, `ZipFile` for the HD
